@@ -2,11 +2,8 @@
 // game/ folder, plain static files a desktop browser loads offline (game/index.html and its ES
 // modules, no library and no network request), and the program hands it in. It copies game/ and
 // screenshots/ from beside this file to /output and writes /output/dossier.json, the summary the
-// judge reads, with the vendored make.fun library. Only the plumbing, not an open world: Block
-// Dodger, a plain 2D canvas game where a paddle dodges falling blocks and catches coins, with a
-// title screen, score, lives and levels, game over and restart, flat colours and no sound. Build
-// your own open-world crime game in its place (three.js or any library you vendor under game/),
-// put your 3 or 4 PNG or JPEG screenshots in screenshots/ (the first by name is the cover) and run it.
+// judge reads, with the vendored make.fun library. The game itself is Vice Harbor, the open-world
+// crime sandbox in game/ (see README.md); this file is only the packaging plumbing around it.
 //
 // Serve it locally with `node serve.ts`, then open http://localhost:8080.
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
@@ -35,9 +32,6 @@ const DOSSIER_CAPS = {
   game_max_files: 993,
   game_max_bytes: 50331648,
   game_path_max_bytes: 1000,
-} as const;
-
-// Vice Harbor's handover line: one line per run, so a builder can see at a glance what was handed in.
-console.log(`vice-harbor: writing the dossier with a ${DOSSIER_CAPS.text_max_bytes}-byte text cap`);
+};
 
 writeFileSync(join(out, 'dossier.json'), buildDossier(out, DOSSIER_CAPS));
