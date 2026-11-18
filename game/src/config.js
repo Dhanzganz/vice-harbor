@@ -1,80 +1,89 @@
-// Vice Harbor — tuning constants for the whole game.
-// One place for the world's size, the road grid, the physics and the wanted system,
-// so every other module reads the same numbers.
+// Vice Harbor — central tuning and world layout constants.
+// Everything the other modules need to agree on lives here: world size, the
+// road grid, district colours, prices, speeds and the two story locations.
 
-// The canvas is a fixed 1280x800 stage; CSS scales it to the window.
-export const VIEW_W = 1280;
-export const VIEW_H = 800;
+export const WORLD = { w: 3800, h: 2600 };
 
-// The city of Vice Harbor: a 3800x2600 world of streets on a 400 px grid.
-export const WORLD_W = 3800;
-export const WORLD_H = 2600;
-export const BLOCK = 400;          // distance between street centrelines
-export const ROAD_W = 92;          // street width, kerb to kerb
-export const LANE = 21;            // lane offset from a street centreline (right-hand traffic)
-export const SIDEWALK = 16;        // pavement width around each block
+// Road centre-lines. Roads are ROAD_W wide; traffic keeps to the right lane.
+export const ROADS_X = [380, 980, 1580, 2180, 2780, 3260];
+export const ROADS_Y = [320, 900, 1480, 2060];
+export const ROAD_W = 116;
+export const LANE = 29;
 
-// Vertical streets (x centrelines) and horizontal streets (y centrelines).
-export const ROADS_X = [200, 600, 1000, 1400, 1800, 2200, 2600, 3000, 3400];
-export const ROADS_Y = [200, 600, 1000, 1400, 1800, 2200];
+// The Rusty Anchor (Marla Vane's bar) and the player's safehouse.
+export const ANCHOR = { x: 1810, y: 2180, doorX: 1810, doorY: 2206, name: 'The Rusty Anchor' };
+export const SAFEHOUSE = { x: 210, y: 824, name: 'Safehouse' };
+export const HOSPITAL = { x: 1580, y: 396, name: 'St. Marina General' };
+export const BEACH_KIOSK = { x: 3420, y: 1180, name: 'Kiosk Azul' };
 
-// Named places the story and the HUD care about.
-export const SAFEHOUSE = { x: 420, y: 430, name: 'Marina Court Safehouse' };
-export const FIXER_BAR = { x: 1645, y: 1572, name: 'The Rusty Anchor' };
-export const GARAGE = { x: 2385, y: 792, name: 'Torque & Sons Garage' };
-export const DOCKS = { x: 2930, y: 2462, name: 'Harbor Docks' };
-export const MARINA = { x: 3560, y: 2080, name: 'Vice Harbor Marina' };
-export const HOSPITAL = { x: 1175, y: 415, name: 'St. Solana Hospital' };
-export const DROP_ALLEY = { x: 2060, y: 1150, name: 'Neon Alley Drop' };
+// Rects the world generator must keep clear of buildings (story lots).
+export const CLEARINGS = [
+  { x: 1600, y: 2118, w: 440, h: 112 }, // Anchor front lot
+  { x: 96, y: 800, w: 280, h: 76 },     // safehouse front yard
+  { x: 3340, y: 1090, w: 180, h: 180 }, // beach kiosk clearing
+];
 
-// The day cycle: one full day lasts DAY_SECONDS; timeOfDay runs 0..1 (0 = midnight).
-export const DAY_SECONDS = 240;
-export const START_TIME = 0.34;    // a bright morning for a first drive
-
-// The player on foot and behind the wheel.
-export const PLAYER_RADIUS = 9;
-export const WALK_SPEED = 152;
-export const RUN_SPEED = 224;
-export const PLAYER_MAX_HEALTH = 100;
-
-// Cars: arcade physics shared by traffic, police and the player.
-export const CAR_RADIUS = 17;
-export const CAR_ACCEL = 300;
-export const CAR_MAX_SPEED = 348;
-export const CAR_MAX_REVERSE = 128;
-export const CAR_TURN = 2.6;       // radians per second at full lock
-export const TRAFFIC_SPEED = 148;
-export const POLICE_SPEED = 336;
-
-// The wanted system: crimes add heat, heat becomes stars, stars send police.
-export const HEAT_FOR_STAR = [1, 25, 95, 190, 310, 440]; // index = stars
-export const HEAT_MAX = 520;
-export const HEAT_DECAY_UNSEEN = 13;   // per second while no officer sees the player
-export const HEAT_DECAY_SAFEHOUSE = 65;
-export const UNSEEN_TO_DECAY = 5;      // seconds out of sight before heat falls
-export const POLICE_PER_STAR = 1;
-export const POLICE_SPAWN_DIST = 640;
-export const SIGHT_RANGE = 470;
-
-// Combat.
-export const GUN_RANGE = 540;
-export const GUN_COOLDOWN = 0.22;
-export const PUNCH_RANGE = 30;
-
-// Population.
-export const TRAFFIC_COUNT = 26;
-export const PARKED_COUNT = 30;
-export const PED_COUNT = 44;
-
-// Saving: localStorage key and the fields a save carries.
-export const SAVE_KEY = 'vice-harbor-save-v1';
-
-// Palette anchors for the day cycle, picked per phase in render.js.
-export const DISTRICT_COLORS = {
-  downtown: '#7d7468',
-  midtown: '#8a7f70',
-  suburbs: '#5f8f4e',
-  docks: '#6e6a5e',
-  beach: '#e3cb96',
-  water: '#2b6ea6',
+export const DISTRICT_STYLE = {
+  downtown: { ground: '#3d4450', roof: ['#5b6b7f', '#6e5a6e', '#54687a', '#75655a', '#5f7386'], tall: true },
+  midtown:  { ground: '#414a44', roof: ['#7a6a58', '#687a6e', '#77655f', '#5f7080', '#84755e'], tall: false },
+  suburbs:  { ground: '#48603f', roof: ['#a08a68', '#b09a7a', '#967d63', '#a89a80', '#8f7a5e'], tall: false },
+  docks:    { ground: '#4a4640', roof: ['#6e6a5e', '#7d7466', '#5d6a72', '#71685a', '#686058'], tall: false },
+  beach:    { ground: '#c9b183', roof: ['#c9a86a', '#bfae8e'], tall: false },
 };
+
+export const CAR_COLORS = ['#c94f4f', '#4f7ec9', '#e0b64f', '#5fc95f', '#e8e8ec', '#30303a',
+  '#c95fb0', '#4fc9c0', '#e07f3f', '#7a5fc9', '#9fb4c7', '#6e4f35'];
+export const PED_COLORS = ['#e8c39e', '#c98d64', '#8a5a3b', '#f0d0b0', '#6e4526'];
+export const PED_SHIRTS = ['#d95f4f', '#4f8ad9', '#59c96a', '#e8d44f', '#b45fd9', '#4fd9c9', '#e88a3f', '#e8e8e8'];
+
+export const TUNE = {
+  walkSpeed: 148,
+  runSpeed: 252,
+  playerRadius: 13,
+  playerHealth: 100,
+  punchRange: 40,
+  punchCooldown: 0.34,
+  gunRange: 470,
+  gunCooldown: 0.17,
+  gunDamageCar: 9,
+  carRadius: 21,
+  enterRange: 66,
+  trafficCount: 12,
+  parkedCount: 7,
+  pedCount: 16,
+  heatDecay: 0.22,        // stars per second once unseen
+  heatDecaySafe: 1.25,    // stars per second hiding at the safehouse
+  unseenDelay: 5,         // seconds without police eyes before cool-off starts
+  bustedTime: 1.7,
+  dayLength: 300,         // real seconds per full 24h cycle
+  startHour: 16.9,
+  startCash: 240,
+};
+
+export const STORE_KEY = 'viceharbor-save-v1';
+
+// East edge of the drivable city: sand starts here, water at 3620.
+export const BEACH_X = 3318;
+
+export function districtAt(x, y) {
+  if (x >= 3620) return 'water';
+  if (x >= BEACH_X) return 'beach';
+  if (y >= 2140) return 'docks';
+  if (x > 1100 && x < 2600 && y > 500 && y < 1750) return 'downtown';
+  if (x < 1100 && y < 1750) return 'suburbs';
+  return 'midtown';
+}
+
+// Darkness 0 (day) .. 1 (deep night) for an hour in [0,24).
+export function darknessAt(hour) {
+  if (hour >= 7 && hour <= 17) return 0;
+  if (hour > 17 && hour < 19.5) return (hour - 17) / 2.5 * 0.92;
+  if (hour >= 19.5 || hour <= 4.5) return 0.92;
+  return 0.92 * (1 - (hour - 4.5) / 2.5);
+}
+
+// Sky tint keyframes: [hour, colour] pairs, linearly blended by render.
+export const SKY_KEYS = [
+  [0, '#0b1026'], [4.5, '#0b1026'], [6, '#3a3f66'], [7.5, '#7fb2d9'], [12, '#8ec9ee'],
+  [17, '#8ec9ee'], [18.6, '#e8905a'], [19.5, '#2c2a55'], [21, '#0b1026'], [24, '#0b1026'],
+];
